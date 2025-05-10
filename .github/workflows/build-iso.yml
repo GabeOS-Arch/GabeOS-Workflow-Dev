@@ -1,0 +1,51 @@
+on:
+  schedule:
+    - cron: '0 20 1 * 0'
+  workflow_dispatch:
+  push:
+
+name: Build ISO
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: 
+      image: archlinux
+      options: --privileged
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+    
+      - name: version
+        run: echo "version=$(date +%Y.%m.%d)" >> $GITHUB_OUTPUT
+        id: version
+
+      - name: Install Dependencies
+        run: pacman -Syu grub edk2-shell memtest86+ archiso arch-install-scripts git base-devel sudo --noconfirm
+
+      - name: Build iso
+        run: ./build_iso.sh
+
+      - name: release
+        uses: actions/create-release@v1
+        id: create_release
+        with:
+          draft: false
+          prerelease: false
+          release_name: htarchiso-${{ steps.version.outputs.version }}.iso
+          tag_name: v${{ steps.version.outputs.version }}
+          body_path: CHANGELOG.md
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: upload iso artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./out/archiso-calamares-${{ steps.version.outputs.version }}-x86_64.iso
+          asset_name: archiso-calamares.iso
+          asset_content_type: application/x-iso9660-image

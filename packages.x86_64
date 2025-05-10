@@ -1,0 +1,62 @@
+# Base packages
+base
+base-devel
+btrfs-progs
+chaotic-keyring
+chaotic-mirrorlist
+dmraid
+dosfstools
+efibootmgr
+grub
+linux-firmware
+lvm2
+man-db
+man-pages
+mdadm
+nano
+ntfs-3g
+mkinitcpio
+mkinitcpio-firmware
+openssh
+texinfo
+vim
+zsh
+grml-zsh-config
+
+# Virtualization
+hyperv
+open-vm-tools
+qemu-guest-agent
+virtualbox-guest-utils-nox
+
+# Preferences
+linux-zen
+networkmanager
+firefox
+
+# Archiso
+curl
+edk2-shell
+gnupg
+memtest86+
+memtest86+-efi
+mkinitcpio-archiso
+mkinitcpio-nfs-utils
+openssl
+pv
+
+# Live System
+arch-install-scripts
+calamares
+syslinux
+
+# Plasma
+breeze
+breeze-gtk
+dolphin
+dolphin-plugins
+konsole
+ocean-sound-theme
+plasma-desktop
+plasma-nm
+sddm
