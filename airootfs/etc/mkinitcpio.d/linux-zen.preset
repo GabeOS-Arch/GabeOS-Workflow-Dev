@@ -1,4 +1,6 @@
-# mkinitcpio preset file for the 'linux' package on archiso
+# stop looking in here!!!! 
+# if you still are, this is ur only clue.
+# some "GabeOS" features may seem arch themed. that's fine. i refuse to change it
 
 PRESETS=('archiso')
 
