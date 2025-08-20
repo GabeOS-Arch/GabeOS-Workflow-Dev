@@ -19,7 +19,7 @@ mkinitcpio
 mkinitcpio-firmware
 openssh
 texinfo
-vim
+neovim
 zsh
 grml-zsh-config
 
@@ -28,6 +28,7 @@ linux-zen
 networkmanager
 librewolf
 thunderbird
+fastfetch
 
 # Archiso
 curl
