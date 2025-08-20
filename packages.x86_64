@@ -23,16 +23,11 @@ vim
 zsh
 grml-zsh-config
 
-# Virtualization
-hyperv
-open-vm-tools
-qemu-guest-agent
-virtualbox-guest-utils-nox
-
 # Preferences
 linux-zen
 networkmanager
-firefox
+librewolf
+thunderbird
 
 # Archiso
 curl
@@ -50,13 +45,8 @@ arch-install-scripts
 calamares
 syslinux
 
-# Plasma
-breeze
-breeze-gtk
-dolphin
-dolphin-plugins
-konsole
-ocean-sound-theme
-plasma-desktop
-plasma-nm
-sddm
+# DEs and such
+gnome
+hyprland
+
+
