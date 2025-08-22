@@ -41,7 +41,14 @@ jobs:
           ISO=$(ls out/*.iso | head -n 1)
           ISO_NAME=$(basename "$ISO")
           echo "Uploading $ISO_NAME to Supabase..."
-          curl -X POST "$SUPABASE_URL/storage/v1/object/$SUPABASE_BUCKET/$ISO_NAME" \
+          curl -X PUT "$SUPABASE_URL/storage/v1/object/$SUPABASE_BUCKET/$ISO_NAME" \
             -H "Authorization: Bearer $SUPABASE_TOKEN" \
             -H "Content-Type: application/octet-stream" \
+            -H "x-upsert: true" \
             --data-binary @"$ISO"
+
+          echo ""
+          echo "🎉 Upload complete!"
+          echo "👉 Public URL:"
+          echo "$SUPABASE_URL/storage/v1/object/public/$SUPABASE_BUCKET/$ISO_NAME"
+
