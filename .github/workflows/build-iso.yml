@@ -30,24 +30,17 @@ jobs:
       - name: Build iso
         run: ./build_iso.sh
 
-      - name: release
-        uses: actions/create-release@v1
-        id: create_release
-        with:
-          draft: false
-          prerelease: false
-          release_name: htarchiso-${{ steps.version.outputs.version }}.iso
-          tag_name: v${{ steps.version.outputs.version }}
-          body_path: CHANGELOG.md
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+      - name: Upload ISO to transfer.sh
+        run: |
+          ISO=$(ls out/*.iso | head -n 1)
+          echo "Uploading $ISO to transfer.sh..."
+          URL=$(curl --upload-file "$ISO" https://transfer.sh/$(basename $ISO))
+          echo "Download link: $URL"
+          echo "download_url=$URL" >> $GITHUB_OUTPUT
+        id: upload
 
-      - name: upload iso artifact
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./out/archiso-calamares-${{ steps.version.outputs.version }}-x86_64.iso
-          asset_name: archiso-calamares.iso
-          asset_content_type: application/x-iso9660-image
+      - name: Add download link to job summary
+        run: |
+          echo "### ✅ GabeOS ISO Build Successful" >> $GITHUB_STEP_SUMMARY
+          echo "Download it here (expires in 14 days):" >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.upload.outputs.download_url }}" >> $GITHUB_STEP_SUMMARY
