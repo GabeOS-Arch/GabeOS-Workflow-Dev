@@ -4,43 +4,45 @@ on:
   workflow_dispatch:
   push:
 
-name: Build ISO
+name: Build GabeOS ISO
 
 jobs:
   build:
+    name: Build the Legendary GabeISO
     permissions:
       contents: write
     runs-on: ubuntu-latest
-    container: 
+    container:
       image: archlinux
       options: --privileged
+
     steps:
-      - name: checkout
+      - name: Checkout Repo
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-    
-      - name: version
-        run: echo "version=$(date +%Y.%m.%d)" >> $GITHUB_OUTPUT
+
+      - name: Set Version
         id: version
+        run: echo "version=$(date +%Y.%m.%d)" >> "$GITHUB_OUTPUT"
 
       - name: Install Dependencies
-        run: pacman -Syu grub edk2-shell memtest86+ archiso arch-install-scripts git base-devel sudo --noconfirm
+        run: pacman -Sy --noconfirm grub edk2-shell memtest86+ archiso arch-install-scripts git base-devel sudo curl
 
-      - name: Build iso
+      - name: Build ISO
         run: ./build_iso.sh
 
-      - name: Upload ISO to 0x0.st
+      - name: Upload ISO to tmpfiles.org
         id: upload
         run: |
           ISO=$(ls out/*.iso | head -n 1)
-          echo "Uploading $ISO to 0x0.st..."
-          URL=$(curl -F "file=@$ISO" https://0x0.st)
-          echo "Download link: $URL"
-          echo "download_url=$URL" >> $GITHUB_OUTPUT
+          echo "Uploading $ISO to tmpfiles.org..."
+          URL=$(curl -s -F "file=@$ISO" https://tmpfiles.org/api/v1/upload)
+          echo "download_url=$URL" >> "$GITHUB_OUTPUT"
 
-      - name: Add download link to job summary
+      - name: Add Download Link to Summary
         run: |
-          echo "### ✅ GabeOS ISO Build Successful" >> $GITHUB_STEP_SUMMARY
-          echo "Download it here (expires ~30 days):" >> $GITHUB_STEP_SUMMARY
+          echo "## 🧊 GabeOS ISO Build: ${{ steps.version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Download it here (valid ~60 min):**" >> $GITHUB_STEP_SUMMARY
           echo "${{ steps.upload.outputs.download_url }}" >> $GITHUB_STEP_SUMMARY
