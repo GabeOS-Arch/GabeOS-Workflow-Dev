@@ -1,48 +1,47 @@
+name: Build the legendary GabeISO
+
 on:
-  schedule:
-    - cron: '0 20 1 * 0'
   workflow_dispatch:
   push:
 
-name: Build GabeOS ISO
-
 jobs:
   build:
-    name: Build the Legendary GabeISO
-    permissions:
-      contents: write
     runs-on: ubuntu-latest
     container:
       image: archlinux
       options: --privileged
 
+    env:
+      SUPABASE_URL: https://your-project-id.supabase.co
+      SUPABASE_BUCKET: gabeos
+      SUPABASE_TOKEN: ${{ secrets.SUPABASE_TOKEN }}
+
     steps:
-      - name: Checkout Repo
+      - name: Checkout the sauce
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Set Version
-        id: version
-        run: echo "version=$(date +%Y.%m.%d)" >> "$GITHUB_OUTPUT"
+      - name: Cache Pacman packages
+        uses: actions/cache@v4
+        with:
+          path: /var/cache/pacman/pkg
+          key: ${{ runner.os }}-pacman
 
-      - name: Install Dependencies
-        run: pacman -Sy --noconfirm grub edk2-shell memtest86+ archiso arch-install-scripts git base-devel sudo curl
+      - name: Install build deps
+        run: pacman -Syu --noconfirm grub edk2-shell memtest86+ archiso arch-install-scripts base-devel sudo git curl
 
-      - name: Build ISO
-        run: ./build_iso.sh
+      - name: Build the ISO
+        run: |
+          mkdir -p out
+          ./build_iso.sh
 
-      - name: Upload ISO to tmpfiles.org
-        id: upload
+      - name: Upload ISO to Supabase
         run: |
           ISO=$(ls out/*.iso | head -n 1)
-          echo "Uploading $ISO to tmpfiles.org..."
-          URL=$(curl -s -F "file=@$ISO" https://tmpfiles.org/api/v1/upload)
-          echo "download_url=$URL" >> "$GITHUB_OUTPUT"
-
-      - name: Add Download Link to Summary
-        run: |
-          echo "## 🧊 GabeOS ISO Build: ${{ steps.version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Download it here (valid ~60 min):**" >> $GITHUB_STEP_SUMMARY
-          echo "${{ steps.upload.outputs.download_url }}" >> $GITHUB_STEP_SUMMARY
+          ISO_NAME=$(basename "$ISO")
+          echo "Uploading $ISO_NAME to Supabase..."
+          curl -X POST "$SUPABASE_URL/storage/v1/object/$SUPABASE_BUCKET/$ISO_NAME" \
+            -H "Authorization: Bearer $SUPABASE_TOKEN" \
+            -H "Content-Type: application/octet-stream" \
+            --data-binary @"$ISO"
