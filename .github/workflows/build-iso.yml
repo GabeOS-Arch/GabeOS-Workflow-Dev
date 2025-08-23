@@ -2,7 +2,6 @@ on:
   push:
   workflow_dispatch:
 
-
 jobs:
   build-and-upload:
     runs-on: ubuntu-latest
@@ -25,22 +24,19 @@ jobs:
           mkdir -p out
           ./build_iso.sh
 
-      - name: Login to Azure
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      - name: Upload ISO to Azure Blob Storage
+      - name: Azure CLI login and upload ISO
         uses: azure/cli@v1
         with:
           azcliversion: latest
           inlineScript: |
+            # Login
+            az login --service-principal -u ${{ secrets.AZURE_APP_ID }} -p ${{ secrets.AZURE_PASSWORD }} --tenant ${{ secrets.AZURE_TENANT_ID }}
+
+            # Upload ISO
             ISO_FILE=$(ls out/*.iso | head -n 1)
             az storage blob upload \
               --account-name blobbydablob \
               --container-name your-container-name \
               --file "$ISO_FILE" \
               --name "$(basename "$ISO_FILE")" \
-              --auth-mode login \
               --overwrite true
-
