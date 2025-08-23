@@ -38,7 +38,7 @@ jobs:
           ISO_NAME=$(basename "$ISO_FILE")
           az storage blob upload \
             --account-name $AZURE_STORAGE_ACCOUNT \
-            --container-name your-container-name \
+            --container-name gabeos \
             --file "$ISO_FILE" \
             --name "$ISO_NAME" \
             --account-key $AZURE_STORAGE_KEY \
