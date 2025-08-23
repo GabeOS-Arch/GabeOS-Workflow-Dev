@@ -1,26 +1,19 @@
-name: Build the legendary GabeISO
+name: Build & Upload ISO to Azure Blob Storage
 
 on:
-  workflow_dispatch:
   push:
+  workflow_dispatch:
 
 jobs:
-  build:
+  build-and-upload:
     runs-on: ubuntu-latest
     container:
       image: archlinux
       options: --privileged
 
-    env:
-      SUPABASE_URL: https://lnmfeirijjkmkbbsmlzh.supabase.co
-      SUPABASE_BUCKET: gabeos
-      SUPABASE_TOKEN: ${{ secrets.SUPABASE_TOKEN }}
-
     steps:
-      - name: Checkout the sauce
+      - name: Checkout source code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Cache Pacman packages
         uses: actions/cache@v4
@@ -28,7 +21,7 @@ jobs:
           path: /var/cache/pacman/pkg
           key: ${{ runner.os }}-pacman
 
-      - name: Install build deps
+      - name: Install build dependencies
         run: pacman -Syu --noconfirm grub edk2-shell memtest86+ archiso arch-install-scripts base-devel sudo git curl
 
       - name: Build the ISO
@@ -36,19 +29,23 @@ jobs:
           mkdir -p out
           ./build_iso.sh
 
-      - name: Upload ISO to Supabase
+      - name: Upload ISO to Azure Blob Storage (using Access Key)
+        env:
+          AZURE_STORAGE_ACCOUNT: ${{ secrets.AZURE_STORAGE_ACCOUNT }}
+          AZURE_STORAGE_KEY: ${{ secrets.AZURE_STORAGE_KEY }}
         run: |
-          ISO=$(ls out/*.iso | head -n 1)
-          ISO_NAME=$(basename "$ISO")
-          echo "Uploading $ISO_NAME to Supabase..."
-          curl -X PUT "$SUPABASE_URL/storage/v1/object/$SUPABASE_BUCKET/$ISO_NAME" \
-            -H "Authorization: Bearer $SUPABASE_TOKEN" \
-            -H "Content-Type: application/octet-stream" \
-            -H "x-upsert: true" \
-            --data-binary @"$ISO"
+          ISO_FILE=$(ls out/*.iso | head -n 1)
+          ISO_NAME=$(basename "$ISO_FILE")
+          az storage blob upload \
+            --account-name $AZURE_STORAGE_ACCOUNT \
+            --container-name gabeos \
+            --file "$ISO_FILE" \
+            --name "$ISO_NAME" \
+            --account-key $AZURE_STORAGE_KEY \
+            --overwrite true
 
-          echo ""
-          echo "🎉 Upload complete!"
-          echo "👉 Public URL:"
-          echo "$SUPABASE_URL/storage/v1/object/public/$SUPABASE_BUCKET/$ISO_NAME"
+      - name: Show Download URL
+        run: |
+          ISO_NAME=$(basename $(ls out/*.iso | head -n 1))
+          echo "Download URL: https://$AZURE_STORAGE_ACCOUNT.blob.core.windows.net/your-container-name/$ISO_NAME"
 
