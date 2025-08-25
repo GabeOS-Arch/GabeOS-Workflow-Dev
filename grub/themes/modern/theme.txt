@@ -1,0 +1,75 @@
+# Modern GRUB Theme - Clean and Professional
+# Main theme options
+title-text: ""
+desktop-image: "background.png"
+desktop-color: "#0f0f23"
+terminal-font: "Ubuntu-Regular-20"
+terminal-box: "terminal_box_*.png"
+terminal-left: "0"
+terminal-top: "0"
+terminal-width: "100%"
+terminal-height: "100%"
+terminal-border: "0"
+
+# Modern boot menu - Centered and elegant
+boot_menu {
+  left = 50%
+  top = 50%
+  width = 65%
+  height = 75%
+  item_font = "Ubuntu-Regular-24"
+  item_color = "#e0e0e0"
+  selected_item_color = "#00d4ff"
+  icon_width = 52
+  icon_height = 52
+  item_icon_space = 28
+  item_height = 55
+  item_padding = 10
+  item_spacing = 18
+  selected_item_pixmap_style = "select_*.png"
+  item_pixmap_style = "select_e.png"
+}
+
+# Modern countdown timer
+label {
+  left = 50%
+  top = 28%
+  align = "center"
+  id = "__timeout__"
+  text = "Starting selected OS in %d seconds..."
+  color = "#00d4ff"
+  font = "Ubuntu-Regular-18"
+}
+
+# Main title - Arch Linux branding
+label {
+  left = 50%
+  top = 12%
+  align = "center"
+  id = "__title__"
+  text = "Arch Linux"
+  color = "#ffffff"
+  font = "Ubuntu-Regular-36"
+}
+
+# Subtitle with platform info
+label {
+  left = 50%
+  top = 20%
+  align = "center"
+  id = "__subtitle__"
+  text = "Choose your boot option"
+  color = "#888888"
+  font = "Ubuntu-Regular-20"
+}
+
+# Version info
+label {
+  left = 50%
+  top = 85%
+  align = "center"
+  id = "__version__"
+  text = "GRUB 2.06 - Modern Theme"
+  color = "#666666"
+  font = "Ubuntu-Regular-14"
+}
