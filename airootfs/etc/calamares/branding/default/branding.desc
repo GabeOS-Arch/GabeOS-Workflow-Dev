@@ -125,14 +125,14 @@ strings:
     shortProductName:    GabeOS
     version:             2025.1
     shortVersion:        2025.1
-    versionedName:       GabeOS 2025.1 "Half-Life"
+    versionedName:       GabeOS 2025.1 "Byte Banshee"
     shortVersionedName:  GabeOS 2025.1
     bootloaderEntryName: GabeOS
-    productUrl:          https://gabeos.local
-    supportUrl:          https://gabeos.local/support
-    knownIssuesUrl:      https://gabeos.local/issues
-    releaseNotesUrl:     https://gabeos.local/releases
-    donateUrl:           https://gabeos.local/donate
+    productUrl:          https://gabeos.vercel.app
+    supportUrl:          https://gabeos.vercel.app
+    knownIssuesUrl:      https://gabeos.vercel.app
+    releaseNotesUrl:     https://gabeos.vercel.app
+    donateUrl:           https://ko-fi.com/thesomewhatyou
 
 # These images are loaded from the branding module directory.
 #
