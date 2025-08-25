@@ -121,18 +121,18 @@ navigation: widget
 # are visible as buttons there if the corresponding *show* keys
 # are set to "true" (they can also be overridden).
 strings:
-    productName:         "${NAME}"
-    shortProductName:    Generic
-    version:             2023.3 LTS
-    shortVersion:        2023.3
-    versionedName:       Fancy GNU/Linux 2023.3 LTS "Venomous Vole"
-    shortVersionedName:  FancyGL 2023.3
-    bootloaderEntryName: FancyGL
-    productUrl:          https://calamares.io/
-    supportUrl:          https://github.com/calamares/calamares/wiki
-    knownIssuesUrl:      https://github.com/calamares/calamares/issues
-    releaseNotesUrl:     https://calamares.io/news/
-    donateUrl:           https://kde.org/community/donations/index.php
+    productName:         "GabeOS"
+    shortProductName:    GabeOS
+    version:             2025.8
+    shortVersion:        2025.8
+    versionedName:       "GabeOS Byte Bitter 2025.8"
+    shortVersionedName:  "GabeOS 2025.8"
+    bootloaderEntryName: GabeOS
+    productUrl:          https://gabeos.vercel.app
+    supportUrl:          https://gabeos.vercel.app
+    knownIssuesUrl:      https://gabeos.vercel.app/issues
+    releaseNotesUrl:     https://gabeos.vercel.app/news
+    donateUrl:           https://ko-fi.com/thesomewhatyou
 
 # These images are loaded from the branding module directory.
 #
