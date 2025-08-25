@@ -121,18 +121,18 @@ navigation: widget
 # are visible as buttons there if the corresponding *show* keys
 # are set to "true" (they can also be overridden).
 strings:
-    productName:         "${NAME}"
-    shortProductName:    Generic
-    version:             2023.3 LTS
-    shortVersion:        2023.3
-    versionedName:       Fancy GNU/Linux 2023.3 LTS "Venomous Vole"
-    shortVersionedName:  FancyGL 2023.3
-    bootloaderEntryName: FancyGL
-    productUrl:          https://calamares.io/
-    supportUrl:          https://github.com/calamares/calamares/wiki
-    knownIssuesUrl:      https://github.com/calamares/calamares/issues
-    releaseNotesUrl:     https://calamares.io/news/
-    donateUrl:           https://kde.org/community/donations/index.php
+    productName:         GabeOS
+    shortProductName:    GabeOS
+    version:             2025.1
+    shortVersion:        2025.1
+    versionedName:       GabeOS 2025.1 "Half-Life"
+    shortVersionedName:  GabeOS 2025.1
+    bootloaderEntryName: GabeOS
+    productUrl:          https://gabeos.local
+    supportUrl:          https://gabeos.local/support
+    knownIssuesUrl:      https://gabeos.local/issues
+    releaseNotesUrl:     https://gabeos.local/releases
+    donateUrl:           https://gabeos.local/donate
 
 # These images are loaded from the branding module directory.
 #
@@ -163,10 +163,10 @@ strings:
 # These filenames can also use substitutions from os-release (see above).
 images:
     # productBanner:       "banner.png"
-    productIcon:         "squid.png"
-    productLogo:         "squid.png"
-    # productWallpaper:    "wallpaper.png"
-    productWelcome:      "languages.png"
+    productIcon:         "gabeos.png"
+    productLogo:         "gabeos.png"
+    # productWallpaper:    "gabeos_wallpaper.png"
+    productWelcome:      "gabeos_welcome.png"
 
 # Colors for text and background components.
 #
