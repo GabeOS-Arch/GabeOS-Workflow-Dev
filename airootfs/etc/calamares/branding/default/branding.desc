@@ -125,7 +125,7 @@ strings:
     shortProductName:    GabeOS
     version:             2025.8
     shortVersion:        2025.8
-    versionedName:       "GabeOS Byte Bitter 2025.8"
+    versionedName:       "GabeOS Byte Biter 2025.8"
     shortVersionedName:  "GabeOS 2025.8"
     bootloaderEntryName: GabeOS
     productUrl:          https://gabeos.vercel.app
