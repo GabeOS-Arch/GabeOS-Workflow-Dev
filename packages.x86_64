@@ -2,8 +2,6 @@
 base
 base-devel
 btrfs-progs
-chaotic-keyring
-chaotic-mirrorlist
 dmraid
 dosfstools
 efibootmgr
