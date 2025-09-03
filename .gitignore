@@ -1,3 +1,6 @@
 out/*
 calamares/calamares.db*
 calamares/calamares.files*
+__pycache__/
+*.pyc
+*.pyo

@@ -19,6 +19,7 @@ _n = _translation.ngettext
 
 custom_status_message = None
 status_update_time = 0
+install_progress = 0.0
 
 
 class PacmanError(Exception):
@@ -48,10 +49,13 @@ def line_cb(line):
     """
     global custom_status_message
     global status_update_time
+    global install_progress
     custom_status_message = line.strip()
     libcalamares.utils.debug("pacstrap: " + line.strip())
     if (time.time() - status_update_time) > 0.5:
-        libcalamares.job.setprogress(0)
+        # Increment progress slightly for user feedback
+        install_progress = min(install_progress + 0.01, 0.9)
+        libcalamares.job.setprogress(install_progress)
         status_update_time = time.time()
 
 
@@ -63,7 +67,7 @@ def run_in_host(command, line_func):
             line_func(line)
     proc.wait()
     if proc.returncode != 0:
-        raise PacmanError("Failed to run pacman")
+        raise PacmanError("Command '{}' failed with return code {}".format(' '.join(command), proc.returncode))
 
 
 def run():
@@ -99,7 +103,7 @@ def run():
     except subprocess.CalledProcessError as cpe:
         return "Failed to run pacstrap", "Pacstrap failed with error {!s}".format(cpe.stderr)
     except PacmanError as pe:
-        return "Failed to run pacstrap", format(pe)
+        return "Failed to run pacstrap", str(pe.message)
 
     # copy files post install
     if "postInstallFiles" in libcalamares.job.configuration:
