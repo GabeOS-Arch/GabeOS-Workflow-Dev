@@ -6,6 +6,7 @@ dmraid
 dosfstools
 efibootmgr
 grub
+os-prober
 linux-firmware
 lvm2
 man-db

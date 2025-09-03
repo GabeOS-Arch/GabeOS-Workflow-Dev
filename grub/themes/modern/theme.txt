@@ -69,7 +69,7 @@ label {
   top = 85%
   align = "center"
   id = "__version__"
-  text = "GRUB 2.06 - Modern Theme"
+  text = "GRUB - Modern Theme"
   color = "#666666"
   font = "Ubuntu-Regular-14"
 }
