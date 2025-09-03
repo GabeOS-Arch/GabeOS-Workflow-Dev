@@ -3,7 +3,7 @@
 GRUB_DEFAULT=0
 GRUB_TIMEOUT=10
 GRUB_DISTRIBUTOR="GabeOS"
-GRUB_CMDLINE_LINUX_DEFAULT="quiet"
+GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"
 GRUB_CMDLINE_LINUX=""
 
 # Preload both GPT and MBR modules so that they are not missed
@@ -52,3 +52,6 @@ GRUB_DISABLE_RECOVERY=true
 # Uncomment to make GRUB remember the last selection. This requires to
 # set 'GRUB_DEFAULT=saved' above.
 #GRUB_SAVEDEFAULT="true"
+
+# Enable os-prober to detect other operating systems
+GRUB_DISABLE_OS_PROBER=false
