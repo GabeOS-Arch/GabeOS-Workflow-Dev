@@ -11,7 +11,4 @@ if [[ $EUID -ne 0 ]]; then
 
 fi
 
-
-
-
 mkarchiso -v -w /tmp/ht-archiso -r -P .
