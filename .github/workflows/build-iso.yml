@@ -18,16 +18,28 @@ jobs:
       - name: Cache Pacman packages
         uses: actions/cache@v4
         with:
-          path: /var/cache/pacman/pkg
-          key: ${{ runner.os }}-pacman
+          path: |
+            /var/cache/pacman/pkg
+            /tmp/ht-archiso/airootfs/var/cache/pacman/pkg
+          key: ${{ runner.os }}-pacman-${{ hashFiles('packages.x86_64', 'bootstrap_packages.x86_64') }}
+          restore-keys: |
+            ${{ runner.os }}-pacman-
 
       - name: Install build dependencies
-        run: pacman -Syu --noconfirm grub edk2-shell memtest86+ archiso arch-install-scripts base-devel sudo git curl azure-cli
+        run: |
+          pacman -Syu --noconfirm --needed grub edk2-shell memtest86+ archiso arch-install-scripts base-devel sudo git curl azure-cli
+          # Optimize makepkg for faster builds
+          sed -i 's/#MAKEFLAGS="-j2"/MAKEFLAGS="-j$(nproc)"/' /etc/makepkg.conf
+          sed -i 's/COMPRESSZST=(zstd -c -z -q -)/COMPRESSZST=(zstd -c -z -q -T0 -6)/' /etc/makepkg.conf
 
       - name: Build the ISO
         run: |
           mkdir -p out
-          ./build_iso.sh
+          # Set performance-optimized environment variables
+          export MKSQUASHFS_PROCS=$(nproc)
+          export MAKEFLAGS="-j$(nproc)"
+          # Run the build with timing
+          time ./build_iso.sh
 
       - name: Upload ISO to Azure Blob Storage (using Access Key)
         env:
@@ -36,15 +48,20 @@ jobs:
         run: |
           ISO_FILE=$(ls out/*.iso | head -n 1)
           ISO_NAME=$(basename "$ISO_FILE")
+          echo "Uploading $ISO_NAME ($(du -h "$ISO_FILE" | cut -f1))"
           az storage blob upload \
             --account-name $AZURE_STORAGE_ACCOUNT \
             --container-name gabeos \
             --file "$ISO_FILE" \
             --name "$ISO_NAME" \
             --account-key $AZURE_STORAGE_KEY \
-            --overwrite true
+            --overwrite true \
+            --max-connections 4 \
+            --tier Hot
 
       - name: Show Download URL
+        env:
+          AZURE_STORAGE_ACCOUNT: ${{ secrets.AZURE_STORAGE_ACCOUNT }}
         run: |
           ISO_NAME=$(basename $(ls out/*.iso | head -n 1))
-          echo "Download URL: https://$AZURE_STORAGE_ACCOUNT.blob.core.windows.net/your-container-name/$ISO_NAME"
+          echo "Download URL: https://$AZURE_STORAGE_ACCOUNT.blob.core.windows.net/gabeos/$ISO_NAME"

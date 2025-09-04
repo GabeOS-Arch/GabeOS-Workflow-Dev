@@ -5,4 +5,4 @@ if [[ $EUID -ne 0 ]]; then
   exit 1
 fi
 
-mkarchiso -v -w /tmp/ht-archiso -r .
+mkarchiso -v -w /tmp/ht-archiso -r -P .
