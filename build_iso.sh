@@ -11,4 +11,4 @@ if [[ $EUID -ne 0 ]]; then
 
 fi
 
-mkarchiso -v -w /tmp/ht-archiso -r -P .
+mkarchiso -v -m "iso" -A "GabeOS" -L "GabeOS_2025_09_ByteBiter" -P "GabeOS" -D gabeos -r -w /tmp/ht-archiso -o out ./gabeos
