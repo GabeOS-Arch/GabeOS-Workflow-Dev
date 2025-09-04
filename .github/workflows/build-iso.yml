@@ -35,7 +35,11 @@ jobs:
       - name: Build the ISO
         run: |
           mkdir -p out
-          ./build_iso.sh
+          # Set performance-optimized environment variables
+          export MKSQUASHFS_PROCS=$(nproc)
+          export MAKEFLAGS="-j$(nproc)"
+          # Run the build with timing
+          time ./build_iso.sh
 
       - name: Upload ISO to Azure Blob Storage (using Access Key)
         env:
