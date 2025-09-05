@@ -1,6 +1,7 @@
 # Base packages
 base
 base-devel
+systemd
 btrfs-progs
 dmraid
 dosfstools
