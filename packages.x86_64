@@ -48,6 +48,7 @@ syslinux
 
 # DEs and such
 gnome
+gdm
 hyprland
 
 
