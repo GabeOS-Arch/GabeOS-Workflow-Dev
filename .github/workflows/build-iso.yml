@@ -1,4 +1,4 @@
-name: Build ISO and Upload to Az-u-ray
+name: Build ISO and Upload to GCS
 
 on:
   push:
@@ -7,42 +7,68 @@ on:
 jobs:
   build-and-upload:
     runs-on: ubuntu-latest
-    container:
-      image: archlinux
-      options: --privileged
-
+    # we run the arch build inside a docker archlinux container so we have pacman/archiso
     steps:
-      - name: Checkout source code
+      - name: Checkout source
         uses: actions/checkout@v4
 
-      - name: Cache Pacman packages
+      - name: Cache pacman package cache (host -> mounted into container)
         uses: actions/cache@v4
         with:
-          path: /var/cache/pacman/pkg
-          key: ${{ runner.os }}-pacman
+          path: ${{ runner.temp }}/pacman-pkg-cache
+          key: ${{ runner.os }}-pacman-${{ hashFiles('**/build_iso.sh') }}
 
-      - name: Install build dependencies
-        run: pacman -Syu --noconfirm grub edk2-shell memtest86+ archiso arch-install-scripts base-devel sudo git curl azure-cli
-
-      - name: Build the ISO
+      - name: Build ISO inside an Arch container
         run: |
           mkdir -p out
-          ./build_iso.sh
-      - name: Upload ISO to Azure Blob Storage (using Access Key)
+          # run archlinux container, mount workspace and the pacman cache from runner temp
+          docker run --rm --privileged \
+            -v "${{ github.workspace }}":/workspace \
+            -v "${{ runner.temp }}/pacman-pkg-cache":/var/cache/pacman/pkg \
+            -w /workspace \
+            archlinux:latest /bin/bash -lc "
+              set -e
+              pacman -Sy --noconfirm
+              pacman -S --noconfirm grub edk2-shell memtest86+ archiso arch-install-scripts base-devel sudo git curl python3
+              # run your ISO builder script (must produce out/*.iso in repo workspace)
+              ./build_iso.sh
+              # ensure the produced ISO is owned so runner can access it
+              chown -R $(id -u):$(id -g) out || true
+            "
+
+      - name: Authenticate to GCP (Service Account key or WIF)
+        # v2 supports both service account JSON and Workload Identity Federation
+        uses: google-github-actions/auth@v2
+        with:
+          # Option A (easy): supply a Service Account JSON in the repo secret GCP_SA_KEY
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+          # Option B (recommended, keyless): comment above and use workload_identity_provider + service_account
+          # workload_identity_provider: projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/POOL/providers/PROVIDER
+        # NOTE: if you use Workload Identity Federation you must also add `permissions` at job level:
+        # permissions:
+        #   contents: 'read'
+        #   id-token: 'write'
+
+      - name: Install gcloud & gsutil
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          export_default_credentials: true
+
+      - name: Upload ISO to GCS
         env:
-          AZURE_STORAGE_ACCOUNT: ${{ secrets.AZURE_STORAGE_ACCOUNT }}
-          AZURE_STORAGE_KEY: ${{ secrets.AZURE_STORAGE_KEY }}
+          GCP_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
+          GCS_BUCKET: ${{ secrets.GCS_BUCKET }}
         run: |
-          ISO_FILE=$(ls out/*.iso | head -n 1)
+          ISO_FILE=$(ls out/*.iso | head -n1)
+          if [ -z "$ISO_FILE" ]; then
+            echo "No ISO found in out/*.iso — failing"
+            exit 1
+          fi
           ISO_NAME=$(basename "$ISO_FILE")
-          az storage blob upload \
-            --account-name $AZURE_STORAGE_ACCOUNT \
-            --container-name gabeos \
-            --file "$ISO_FILE" \
-            --name "$ISO_NAME" \
-            --account-key $AZURE_STORAGE_KEY \
-            --overwrite true
-      - name: Show Download URL
-        run: |
-          ISO_NAME=$(basename $(ls out/*.iso | head -n 1))
-          echo "Download URL: https://$AZURE_STORAGE_ACCOUNT.blob.core.windows.net/your-container-name/$ISO_NAME"
+          echo "Uploading $ISO_NAME to gs://$GCS_BUCKET/"
+          gcloud config set project "$GCP_PROJECT"
+          # copy to the bucket (gsutil included with gcloud)
+          gsutil cp "$ISO_FILE" gs://"$GCS_BUCKET"/"$ISO_NAME"
+          echo "Uploaded to: gs://$GCS_BUCKET/$ISO_NAME"
+          echo "Public-ish URL (only works if bucket/object is public): https://storage.googleapis.com/$GCS_BUCKET/$ISO_NAME"
