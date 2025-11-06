@@ -48,22 +48,29 @@ syslinux
 
 # Hyprland and Wayland utilities
 hyprland
+hypridle
+hyprlock
+hyprcursor
 xdg-desktop-portal-hyprland
 qt5-wayland
 qt6-wayland
+qt5ct
+qt6ct
+qt6-svg
 sddm
 waybar
-wofi
+rofi
 kitty
-dunst
+swaync
+swappy
+wallust
 grim
 slurp
-swaylock
 swww
 brightnessctl
 playerctl
-polkit-kde-agent
 wl-clipboard
+pamixer
 pipewire
 pipewire-pulse
 wireplumber
@@ -72,8 +79,33 @@ network-manager-applet
 thunar
 thunar-volman
 gvfs
+gvfs-mtp
+kvantum
+imagemagick
+jq
+bc
+cliphist
+python-requests
+python-pyquery
+wlogout
+xdg-user-dirs
+xdg-utils
+yad
+btop
+cava
+loupe
+gnome-system-monitor
+mousepad
+mpv
+mpv-mpris
+wget
+unzip
 ttf-jetbrains-mono-nerd
+ttf-fantasque-nerd
 noto-fonts
 noto-fonts-emoji
+bibata-cursor-theme
+nwg-look
+nwg-displays
 
 
