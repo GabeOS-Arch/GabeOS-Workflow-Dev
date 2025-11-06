@@ -46,9 +46,34 @@ arch-install-scripts
 calamares
 syslinux
 
-# DEs and such
-gnome
-gdm
+# Hyprland and Wayland utilities
 hyprland
+xdg-desktop-portal-hyprland
+qt5-wayland
+qt6-wayland
+sddm
+waybar
+wofi
+kitty
+dunst
+grim
+slurp
+swaylock
+swww
+brightnessctl
+playerctl
+polkit-kde-agent
+wl-clipboard
+pipewire
+pipewire-pulse
+wireplumber
+pavucontrol
+network-manager-applet
+thunar
+thunar-volman
+gvfs
+ttf-jetbrains-mono-nerd
+noto-fonts
+noto-fonts-emoji
 
 

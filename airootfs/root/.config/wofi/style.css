@@ -1,0 +1,49 @@
+window {
+    margin: 0px;
+    border: 2px solid #89b4fa;
+    background-color: #1e1e2e;
+    border-radius: 15px;
+}
+
+#input {
+    margin: 10px;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    background-color: #313244;
+    color: #cdd6f4;
+    font-size: 16px;
+}
+
+#inner-box {
+    margin: 10px;
+    border: none;
+    background-color: #1e1e2e;
+}
+
+#outer-box {
+    margin: 5px;
+    border: none;
+    background-color: #1e1e2e;
+}
+
+#scroll {
+    margin: 0px;
+    border: none;
+}
+
+#text {
+    margin: 5px;
+    border: none;
+    color: #cdd6f4;
+    font-size: 14px;
+}
+
+#entry:selected {
+    background-color: #45475a;
+    border-radius: 8px;
+}
+
+#entry:selected #text {
+    color: #89b4fa;
+}
