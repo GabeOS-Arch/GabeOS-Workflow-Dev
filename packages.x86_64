@@ -24,8 +24,12 @@ zsh
 grml-zsh-config
 
 # Preferences
+chaotic-keyring
+chaotic-mirrorlist
 linux-zen
 networkmanager
+bluez
+bluez-utils
 librewolf
 thunderbird
 fastfetch
