@@ -11,12 +11,21 @@ if [[ ${EUID:-$(id -u)} -ne 0 ]]; then
   exit 1
 fi
 
+# Function to check if a package is installed
+is_installed() {
+    pacman -Qi "$1" &>/dev/null
+}
+
 # Ensure archiso is installed
-pacman -Sy --noconfirm archlinux-keyring >/dev/null 2>&1 || true
-pacman -Syu --noconfirm archiso
+if ! is_installed archiso; then
+    echo "archiso is not installed. Installing..."
+    pacman -Sy --noconfirm archiso
+else
+    echo "archiso is already installed."
+fi
 
 # Performance Optimizations
-# Use all cores for compilation (if any packages are built, though archiso mostly installs binary pkgs)
+# Use all cores for compilation (if any packages are built)
 export MAKEFLAGS="-j$(nproc)"
 # Use all cores for SquashFS creation
 export MKSQUASHFS_PROCS=$(nproc)
@@ -24,12 +33,28 @@ export MKSQUASHFS_PROCS=$(nproc)
 # Output dir
 mkdir -p ./out
 
-# Clean up previous work dir if it exists to avoid conflicts
-rm -rf /tmp/archiso-work
+# Create temporary directories
+# WORK_DIR for mkarchiso working files
+WORK_DIR=$(mktemp -d -t gabeos-build-XXXXXX)
+# PROFILE_WORK_DIR for the modified profile
+PROFILE_WORK_DIR=$(mktemp -d -t gabeos-profile-XXXXXX)
 
-# Create a temporary working directory for the profile
-# This allows us to modify permissions without affecting the git repository
-PROFILE_WORK_DIR=$(mktemp -d /tmp/gabeos-profile-XXXXXX)
+# Cleanup function to ensure temporary directories are removed
+cleanup() {
+    echo "Cleaning up..."
+    if [[ -d "$PROFILE_WORK_DIR" ]]; then
+        rm -rf "$PROFILE_WORK_DIR"
+    fi
+    if [[ -d "$WORK_DIR" ]]; then
+        # Check if we want to keep it for debugging, but generally remove it
+        # Uncomment the next line to keep work dir on failure
+        # echo "Keeping work dir: $WORK_DIR"
+        rm -rf "$WORK_DIR"
+    fi
+}
+trap cleanup EXIT INT TERM
+
+echo "Copying profile to temporary location: $PROFILE_WORK_DIR"
 cp -a . "$PROFILE_WORK_DIR"
 
 echo "Setting up permissions for user archie..."
@@ -48,13 +73,9 @@ mkarchiso \
   -L "GabeOS_$(date +%Y%m%d)" \
   -P "GabeOS" \
   -D "gabeos" \
-  -w /tmp/archiso-work \
+  -w "$WORK_DIR" \
   -o ./out \
   "$PROFILE_WORK_DIR"
-
-# Cleanup
-rm -rf "$PROFILE_WORK_DIR"
-
 
 echo "Build complete. Output in ./out"
 ls -la ./out

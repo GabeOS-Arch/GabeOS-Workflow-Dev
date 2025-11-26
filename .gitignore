@@ -1,4 +1,5 @@
 out/*
+*.iso
 calamares/calamares.db*
 calamares/calamares.files*
 __pycache__/
