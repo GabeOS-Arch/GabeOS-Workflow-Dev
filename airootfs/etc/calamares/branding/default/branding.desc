@@ -123,15 +123,15 @@ navigation: widget
 strings:
     productName:         "GabeOS"
     shortProductName:    GabeOS
-    version:             2025.8
-    shortVersion:        2025.8
-    versionedName:       "GabeOS Byte Biter 2025.8"
-    shortVersionedName:  "GabeOS 2025.8"
+    version:             2025.11
+    shortVersion:        2025.11
+    versionedName:       "GabeOS Byte Biter 2025.11"
+    shortVersionedName:  "GabeOS 2025.11"
     bootloaderEntryName: GabeOS
-    productUrl:          https://gabeos.vercel.app
-    supportUrl:          https://gabeos.vercel.app
-    knownIssuesUrl:      https://gabeos.vercel.app/issues
-    releaseNotesUrl:     https://gabeos.vercel.app/news
+    productUrl:          https://gabeos.dev
+    supportUrl:          https://gabeos.dev
+    knownIssuesUrl:      https://gabeos.dev
+    releaseNotesUrl:     https://gabeos.dev
     donateUrl:           https://ko-fi.com/thesomewhatyou
 
 # These images are loaded from the branding module directory.
