@@ -52,7 +52,6 @@ syslinux
 
 # Hyprland and Wayland utilities
 mesa
-xf86-video-vmware
 xf86-video-qxl
 vulkan-intel
 vulkan-radeon
