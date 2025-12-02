@@ -49,7 +49,7 @@ pv
 arch-install-scripts
 calamares
 syslinux
-systemd-zram-generator
+zram-generator
 
 # Hyprland and Wayland utilities
 mesa
