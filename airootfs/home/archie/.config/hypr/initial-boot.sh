@@ -24,11 +24,12 @@ effect="--transition-bezier .43,1.19,1,.4 --transition-fps 30 --transition-type 
 if [ ! -f "$HOME/.config/hypr/.initial_startup_done" ]; then
     sleep 1
     # Initialize wallust and wallpaper
-	if [ -f "$wallpaper" ]; then
-		wallust run -s $wallpaper > /dev/null 
-		swww query || swww-daemon && $swww $wallpaper $effect
-	    "$scriptsDir/WallustSwww.sh" > /dev/null 2>&1 & 
-	fi
+    if [ -f "$wallpaper" ]; then
+        wallust run -s "$wallpaper" > /dev/null 2>&1 || true
+        swww query || swww-daemon --format xrgb > /dev/null 2>&1
+        $swww "$wallpaper" $effect > /dev/null 2>&1 || true
+        "$scriptsDir/WallustSwww.sh" > /dev/null 2>&1 &
+    fi
      
     # initiate GTK dark mode and apply icon and cursor theme
     gsettings set org.gnome.desktop.interface color-scheme $color_scheme > /dev/null 2>&1 &
@@ -38,13 +39,13 @@ if [ ! -f "$HOME/.config/hypr/.initial_startup_done" ]; then
     gsettings set org.gnome.desktop.interface cursor-size 24 > /dev/null 2>&1 &
 
      # NIXOS initiate GTK dark mode and apply icon and cursor theme
-	if [ -n "$(grep -i nixos < /etc/os-release)" ]; then
+    if [ -n "$(grep -i nixos < /etc/os-release)" ]; then
       gsettings set org.gnome.desktop.interface color-scheme "'$color_scheme'" > /dev/null 2>&1 &
       dconf write /org/gnome/desktop/interface/gtk-theme "'$gtk_theme'" > /dev/null 2>&1 &
       dconf write /org/gnome/desktop/interface/icon-theme "'$icon_theme'" > /dev/null 2>&1 &
       dconf write /org/gnome/desktop/interface/cursor-theme "'$cursor_theme'" > /dev/null 2>&1 &
       dconf write /org/gnome/desktop/interface/cursor-size "24" > /dev/null 2>&1 &
-	fi
+    fi
        
     # initiate kvantum theme
     kvantummanager --set "$kvantum_theme" > /dev/null 2>&1 &
@@ -52,11 +53,11 @@ if [ ! -f "$HOME/.config/hypr/.initial_startup_done" ]; then
     # initiate the kb_layout (for some reason) waybar cant launch it
     "$scriptsDir/SwitchKeyboardLayout.sh" > /dev/null 2>&1 &
 
-	# waybar style
-	#if [ -L "$HOME/.config/waybar/config" ]; then
-    ##    	ln -sf "$waybar_style" "$HOME/.config/waybar/style.css"
-    #   	"$scriptsDir/Refresh.sh" > /dev/null 2>&1 & 
-	#fi
+    # waybar style
+    #if [ -L "$HOME/.config/waybar/config" ]; then
+    ##        ln -sf "$waybar_style" "$HOME/.config/waybar/style.css"
+    #       "$scriptsDir/Refresh.sh" > /dev/null 2>&1 & 
+    #fi
 
 
     # Create a marker file to indicate that the script has been executed.
