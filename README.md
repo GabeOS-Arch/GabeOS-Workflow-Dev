@@ -1,13 +1,23 @@
-This should only be accessed during a GabeOS update.
-Usually, this doesn't happen. We aren't rolling release.
+# GabeOS-Workflow-Dev
 
+This repository contains the development files and resources for the GabeOS project. It includes scripts, configurations, and more for maintaining the GabeOS system.
 
+Yes yes very nice yes.
 
+# Contents
 
+A workflow which deploys to GCS buckets (Switch variably depending on your needs). Ran by GitHub Actions.
 
-If you're still reading, you're probably considering rolling release. 
-You're either making the worst or best decision you've made.
+This is... totally more serious from what I normally do, but idgaf. :octocat: :3c
 
+# License
 
+Whatever the fuck Arch Linux uses.
 
-Anyway, don't leak this to the public. That's... fucked up.
+# OwO why did you make this pubwic?
+
+ \_(^q^)_/
+
+Why didn't I update the README.md after making this public?
+
+Crack. That's why. Crack. 

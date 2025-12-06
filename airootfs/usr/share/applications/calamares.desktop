@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Install GabeOS
+GenericName=System Installer
+Comment=Install GabeOS to your computer
+Exec=pkexec calamares
+Icon=calamares
+Terminal=false
+Categories=System;Qt;
+Keywords=installer;calamares;system;install;
+StartupNotify=true

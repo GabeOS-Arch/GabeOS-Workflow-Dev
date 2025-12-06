@@ -1,0 +1,15 @@
+// Allow members of the wheel group to run Calamares without password
+polkit.addRule(function(action, subject) {
+    if (action.id == "com.github.calamares.calamares.pkexec.run" &&
+        subject.isInGroup("wheel")) {
+        return polkit.Result.YES;
+    }
+});
+
+// Allow members of the wheel group to run pkexec without password (for live session)
+polkit.addRule(function(action, subject) {
+    if (action.id == "org.freedesktop.policykit.exec" &&
+        subject.isInGroup("wheel")) {
+        return polkit.Result.YES;
+    }
+});

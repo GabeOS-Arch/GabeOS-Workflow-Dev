@@ -22,6 +22,7 @@ file_permissions=(
   ["/root/.gnupg"]="0:0:700"
   ["/home/archie"]="1000:1000:750"
   ["/home/archie/.zlogin"]="1000:1000:644"
+  ["/home/archie/.automated_script.sh"]="1000:1000:755"
   ["/home/archie/.config"]="1000:1000:755"
   ["/home/archie/Pictures"]="1000:1000:755"
   ["/usr/local/bin/choose-mirror"]="0:0:755"
