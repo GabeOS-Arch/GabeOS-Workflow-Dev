@@ -123,15 +123,15 @@ navigation: widget
 strings:
     productName:         "GabeOS"
     shortProductName:    GabeOS
-    version:             2025.11
-    shortVersion:        2025.11
-    versionedName:       "GabeOS Byte Biter 2025.11"
-    shortVersionedName:  "GabeOS 2025.11"
+    version:             2025.12
+    shortVersion:        2025.12
+    versionedName:       "GabeOS Byte Biter 2025.12"
+    shortVersionedName:  "GabeOS 2025.12"
     bootloaderEntryName: GabeOS
     productUrl:          https://gabeos.dev
     supportUrl:          https://gabeos.dev
     knownIssuesUrl:      https://gabeos.dev
-    releaseNotesUrl:     https://gabeos.dev
+    releaseNotesUrl:     https://github.com/GabeOS-Arch/GabeOS/releases
     donateUrl:           https://ko-fi.com/thesomewhatyou
 
 # These images are loaded from the branding module directory.
@@ -181,9 +181,9 @@ images:
 # the corresponding CSS attributes of #sidebarApp.
 style:
    SidebarBackground:        "#292F34"
-   SidebarText:              "#FFFFFF"
+   SidebarText:              "rgba(71, 189, 53, 1)"
    SidebarTextCurrent:       "#292F34"
-   SidebarBackgroundCurrent: "#D35400"
+   SidebarBackgroundCurrent: "rgba(84, 0, 211, 1)"
 
 ### SLIDESHOW
 #
