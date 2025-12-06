@@ -67,7 +67,8 @@ qt6-wayland
 qt5ct
 qt6ct
 qt6-svg
-sddm
+greetd
+regreet
 waybar
 rofi
 kitty
@@ -117,5 +118,3 @@ noto-fonts-emoji
 bibata-cursor-theme
 nwg-look
 nwg-displays
-
-

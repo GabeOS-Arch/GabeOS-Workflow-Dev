@@ -1,0 +1,27 @@
+[appearance]
+background = "#0b1220"
+foreground = "#e5f4ff"
+accent = "#58a6ff"
+text_input_background = "#0f1a2d"
+font = "JetBrainsMono Nerd Font"
+font_size = 16
+cursor_theme = "Bibata-Modern-Ice"
+
+[background]
+path = "/usr/share/backgrounds/gabeos/hypr-default.png"
+fit = "Cover"
+
+[commands]
+power = [
+  { label = "Suspend", command = ["systemctl", "suspend"] },
+  { label = "Reboot", command = ["systemctl", "reboot"] },
+  { label = "Power Off", command = ["systemctl", "poweroff"] }
+]
+
+[session_selector]
+show_wayland_sessions = true
+show_x_sessions = false
+
+[settings]
+remember_user = true
+remember_session = true
