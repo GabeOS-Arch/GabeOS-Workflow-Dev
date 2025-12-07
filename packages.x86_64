@@ -124,7 +124,6 @@ coreutils
 util-linux
 xdg-desktop-portal
 xdg-desktop-portal-wlr
-wlroots
 haveged
 rsync
 noto-fonts-cjk
