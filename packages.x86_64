@@ -22,6 +22,10 @@ texinfo
 neovim
 zsh
 grml-zsh-config
+libpwquality
+vim
+sudo
+# No way I forgot to add sudo (O_ô)
 
 # Preferences
 chaotic-keyring
@@ -111,5 +115,3 @@ noto-fonts-emoji
 bibata-cursor-theme
 nwg-look
 nwg-displays
-
-
