@@ -17,7 +17,6 @@ nano
 ntfs-3g
 mkinitcpio
 mkinitcpio-firmware
-libpwquality
 openssh
 texinfo
 neovim
@@ -112,3 +111,5 @@ noto-fonts-emoji
 bibata-cursor-theme
 nwg-look
 nwg-displays
+
+
