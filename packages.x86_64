@@ -22,7 +22,6 @@ texinfo
 neovim
 zsh
 grml-zsh-config
-libpwquality
 vim
 sudo
 # No way I forgot to add sudo (O_ô)
@@ -115,3 +114,21 @@ noto-fonts-emoji
 bibata-cursor-theme
 nwg-look
 nwg-displays
+
+# I should add this
+shadow
+pam
+polkit
+polkit-gnome
+coreutils
+util-linux
+xdg-desktop-portal
+xdg-desktop-portal-wlr
+wlroots
+haveged
+rsync
+noto-fonts-cjk
+noto-fonts-extra
+qt5-quickcontrols
+qt5-quickcontrols2
+
