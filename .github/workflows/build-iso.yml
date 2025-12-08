@@ -64,7 +64,7 @@ jobs:
 
               echo '==> Running ISO build script'
               # run your ISO builder script (must produce out/*.iso in repo workspace)
-              ./workspace/build_iso.sh
+              ./home/runner/work/GabeOS-Workflow-Dev/GabeOS-Workflow-Dev/build_iso.sh
 
               echo '==> Fixing permissions on out/'
               chown -R \$(id -u):\$(id -g) out || true
