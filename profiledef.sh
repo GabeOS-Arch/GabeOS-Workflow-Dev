@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2034
 
-iso_name="GabeOS ISO"
+iso_name="GabeOS_ISO"
 iso_label="ARCH_$(date --date="@${SOURCE_DATE_EPOCH:-$(date +%s)}" +%Y%m)"
 iso_publisher="GabeOS"
 iso_application="GabeOS Live/Rescue Drive... Disk... idgaf"
