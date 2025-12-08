@@ -27,8 +27,6 @@ sudo
 # No way I forgot to add sudo (O_ô)
 
 # Preferences
-chaotic-keyring
-chaotic-mirrorlist
 linux-zen
 networkmanager
 bluez
@@ -129,5 +127,6 @@ rsync
 noto-fonts-cjk
 noto-fonts-extra
 qt5-quickcontrols
+libpwquality
 qt5-quickcontrols2
 
