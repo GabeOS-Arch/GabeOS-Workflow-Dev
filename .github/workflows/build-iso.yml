@@ -97,4 +97,4 @@ jobs:
           gcloud config set project "$GCP_PROJECT"
           gsutil cp "$ISO_FILE" gs://"$GCS_BUCKET"/"$ISO_NAME"
           echo "Uploaded to: gs://$GCS_BUCKET/$ISO_NAME"
-          echo "Public-ish URL (only works if bucket/object is public): https://storage.googleapis.com/$GCS_BUCKET/$ISO_NAME"
+          echo "Public-ish URL (only works if bucket/object is public): https://storage.googleapis.com/gabeos-bucket/$ISO_NAME"
