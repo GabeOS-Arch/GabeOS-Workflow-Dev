@@ -28,26 +28,52 @@ jobs:
             -w /workspace \
             archlinux:latest /bin/bash -lc "
               set -e
-              pacman -Sy --noconfirm
+
+              echo '==> Updating base system'
+              pacman -Syu --noconfirm
+
+              echo '==> Installing build tools and archiso deps'
               pacman -S --noconfirm grub edk2-shell memtest86+ archiso arch-install-scripts base-devel sudo git curl python3
+
+              echo '==> Creating non-root build user'
+              useradd -m builder
+              echo 'builder ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+
+              echo '==> Building Calamares from AUR as builder'
+              su builder -c '
+                set -e
+                cd /home/builder
+                git clone https://aur.archlinux.org/calamares.git
+                cd calamares
+                # you can tweak flags here if needed
+                makepkg -s --noconfirm
+              '
+
+              echo '==> Creating local pacman repo (gabeos-local)'
+              mkdir -p /workspace/local-repo
+              cp /home/builder/calamares/*.pkg.tar.zst /workspace/local-repo/
+
+              cd /workspace/local-repo
+              repo-add gabeos-local.db.tar.gz *.pkg.tar.zst
+
+              echo '==> Adding gabeos-local repo to /etc/pacman.conf (highest priority)'
+              sed -i \"1i [gabeos-local]\\nSigLevel = Optional TrustAll\\nServer = file:///workspace/local-repo\\n\" /etc/pacman.conf
+
+              echo '==> Sanity: show pacman.conf head'
+              head -n 20 /etc/pacman.conf || true
+
+              echo '==> Running ISO build script'
               # run your ISO builder script (must produce out/*.iso in repo workspace)
               ./build_iso.sh
-              # ensure the produced ISO is owned so runner can access it
-              chown -R $(id -u):$(id -g) out || true
+
+              echo '==> Fixing permissions on out/'
+              chown -R \$(id -u):\$(id -g) out || true
             "
 
       - name: Authenticate to GCP (Service Account key or WIF)
-        # v2 supports both service account JSON and Workload Identity Federation
         uses: google-github-actions/auth@v2
         with:
-          # Option A (easy): supply a Service Account JSON in the repo secret GCP_SA_KEY
           credentials_json: ${{ secrets.GCP_SA_KEY }}
-          # Option B (recommended, keyless): comment above and use workload_identity_provider + service_account
-          # workload_identity_provider: projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/POOL/providers/PROVIDER
-        # NOTE: if you use Workload Identity Federation you must also add `permissions` at job level:
-        # permissions:
-        #   contents: 'read'
-        #   id-token: 'write'
 
       - name: Install gcloud & gsutil
         uses: google-github-actions/setup-gcloud@v1
@@ -68,7 +94,6 @@ jobs:
           ISO_NAME=$(basename "$ISO_FILE")
           echo "Uploading $ISO_NAME to gs://$GCS_BUCKET/"
           gcloud config set project "$GCP_PROJECT"
-          # copy to the bucket (gsutil included with gcloud)
           gsutil cp "$ISO_FILE" gs://"$GCS_BUCKET"/"$ISO_NAME"
           echo "Uploaded to: gs://$GCS_BUCKET/$ISO_NAME"
           echo "Public-ish URL (only works if bucket/object is public): https://storage.googleapis.com/$GCS_BUCKET/$ISO_NAME"
