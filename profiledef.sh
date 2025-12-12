@@ -8,7 +8,7 @@ iso_application="GabeOS Live/Rescue Drive... Disk... idgaf"
 iso_version="$(date --date="@${SOURCE_DATE_EPOCH:-$(date +%s)}" +%Y.%m.%d)"
 install_dir="arch"
 buildmodes=('iso')
-bootmodes=('bios.syslinux.mbr' 'uefi-x64.grub.esp')
+bootmodes=('bios.syslinux.mbr' 'uefi-x64.systemd-boot.esp')
 arch="x86_64"
 pacman_conf="pacman.conf"
 airootfs_image_type="squashfs"

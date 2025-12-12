@@ -6,8 +6,6 @@ btrfs-progs
 dmraid
 dosfstools
 efibootmgr
-grub
-os-prober
 linux-firmware
 lvm2
 man-db
@@ -41,6 +39,7 @@ edk2-shell
 gnupg
 memtest86+
 memtest86+-efi
+limine
 mkinitcpio-archiso
 mkinitcpio-nfs-utils
 openssl
@@ -129,4 +128,3 @@ noto-fonts-extra
 qt5-quickcontrols
 libpwquality
 qt5-quickcontrols2
-
