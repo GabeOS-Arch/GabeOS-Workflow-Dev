@@ -24,6 +24,14 @@ else
     echo "archiso is already installed."
 fi
 
+# Ensure libisoburn (provides xorriso) is installed
+if ! is_installed libisoburn; then
+    echo "libisoburn is not installed. Installing..."
+    pacman -Sy --noconfirm libisoburn
+else
+    echo "libisoburn is already installed."
+fi
+
 # Performance Optimizations
 # Use all cores for compilation (if any packages are built)
 export MAKEFLAGS="-j$(nproc)"
@@ -63,19 +71,28 @@ if [[ -d "$PROFILE_WORK_DIR/airootfs/home/archie" ]]; then
     chown -R 1000:1000 "$PROFILE_WORK_DIR/airootfs/home/archie"
 fi
 
-echo "Building GabeOS ISO..."
+# Bootloader/ESP contract: mkarchiso builds syslinux + systemd-boot per profiledef; this script does not override EFI/BOOT.
+echo "Building GabeOS ISO (mkarchiso owns ESP based on profiledef bootmodes)..."
+
+ISO_LABEL="GabeOS_$(date +%Y%m%d)"
 
 # Build using the temporary profile directory
 mkarchiso \
-  -v \
-  -m "iso" \
-  -A "GabeOS Live ISO" \
-  -L "GabeOS_$(date +%Y%m%d)" \
-  -P "GabeOS" \
-  -D "gabeos" \
-  -w "$WORK_DIR" \
-  -o ./out \
-  "$PROFILE_WORK_DIR"
+    -v \
+    -m "iso" \
+    -A "GabeOS Live ISO" \
+    -L "$ISO_LABEL" \
+    -P "GabeOS" \
+    -D "gabeos" \
+    -w "$WORK_DIR" \
+    -o ./out \
+    "$PROFILE_WORK_DIR"
+
+ISO_PATH=$(find ./out -maxdepth 1 -type f -name '*.iso' -printf '%T@ %p\n' 2>/dev/null | sort -nr | head -n1 | cut -d' ' -f2-)
+if [[ -z "${ISO_PATH:-}" ]]; then
+    echo "No ISO found in ./out after build" >&2
+    exit 1
+fi
 
 echo "Build complete. Output in ./out"
 ls -la ./out
