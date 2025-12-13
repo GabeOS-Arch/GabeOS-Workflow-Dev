@@ -24,27 +24,13 @@ else
     echo "archiso is already installed."
 fi
 
-# Ensure limine is installed (UEFI/BIOS bootloader)
-if ! is_installed limine; then
-    echo "limine is not installed. Installing..."
-    pacman -Sy --noconfirm limine
+# Ensure libisoburn (provides xorriso) is installed
+if ! is_installed libisoburn; then
+    echo "libisoburn is not installed. Installing..."
+    pacman -Sy --noconfirm libisoburn
 else
-    echo "limine is already installed."
+    echo "libisoburn is already installed."
 fi
-
-find_limine_assets() {
-    local candidates=(
-        "/usr/share/limine"
-        "/usr/lib/limine"
-    )
-    for d in "${candidates[@]}"; do
-        if [[ -f "$d/limine-bios.sys" && -f "$d/limine-uefi-cd.bin" ]]; then
-            echo "$d"
-            return 0
-        fi
-    done
-    return 1
-}
 
 # Performance Optimizations
 # Use all cores for compilation (if any packages are built)
@@ -79,45 +65,34 @@ trap cleanup EXIT INT TERM
 echo "Copying profile to temporary location: $PROFILE_WORK_DIR"
 cp -a . "$PROFILE_WORK_DIR"
 
-echo "Staging Limine assets..."
-LIMINE_DIR=$(find_limine_assets)
-if [[ -z "${LIMINE_DIR:-}" ]]; then
-    echo "Unable to find Limine assets (looked in /usr/share/limine and /usr/lib/limine)" >&2
-    exit 1
-fi
-
-install -Dm644 "$LIMINE_DIR/limine-bios.sys" "$PROFILE_WORK_DIR/limine-bios.sys"
-install -Dm644 "$LIMINE_DIR/limine-bios-cd.bin" "$PROFILE_WORK_DIR/limine-bios-cd.bin"
-install -Dm644 "$LIMINE_DIR/limine-uefi-cd.bin" "$PROFILE_WORK_DIR/limine-uefi-cd.bin"
-install -Dm644 "$LIMINE_DIR/BOOTX64.EFI" "$PROFILE_WORK_DIR/efiboot/EFI/BOOT/BOOTX64.EFI"
-
 echo "Setting up permissions for user archie..."
 # Fix permissions for archie's home directory recursively
 if [[ -d "$PROFILE_WORK_DIR/airootfs/home/archie" ]]; then
     chown -R 1000:1000 "$PROFILE_WORK_DIR/airootfs/home/archie"
 fi
 
-echo "Building GabeOS ISO..."
+# Bootloader/ESP contract: mkarchiso builds syslinux + systemd-boot per profiledef; this script does not override EFI/BOOT.
+echo "Building GabeOS ISO (mkarchiso owns ESP based on profiledef bootmodes)..."
+
+ISO_LABEL="GabeOS_$(date +%Y%m%d)"
 
 # Build using the temporary profile directory
 mkarchiso \
-  -v \
-  -m "iso" \
-  -A "GabeOS Live ISO" \
-  -L "GabeOS_$(date +%Y%m%d)" \
-  -P "GabeOS" \
-  -D "gabeos" \
-  -w "$WORK_DIR" \
-  -o ./out \
-  "$PROFILE_WORK_DIR"
+    -v \
+    -m "iso" \
+    -A "GabeOS Live ISO" \
+    -L "$ISO_LABEL" \
+    -P "GabeOS" \
+    -D "gabeos" \
+    -w "$WORK_DIR" \
+    -o ./out \
+    "$PROFILE_WORK_DIR"
 
-echo "Embedding Limine BIOS stages into ISO..."
 ISO_PATH=$(find ./out -maxdepth 1 -type f -name '*.iso' -printf '%T@ %p\n' 2>/dev/null | sort -nr | head -n1 | cut -d' ' -f2-)
 if [[ -z "${ISO_PATH:-}" ]]; then
     echo "No ISO found in ./out after build" >&2
     exit 1
 fi
-limine bios-install "$ISO_PATH"
 
 echo "Build complete. Output in ./out"
 ls -la ./out
