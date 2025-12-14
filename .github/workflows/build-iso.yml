@@ -30,10 +30,13 @@ jobs:
               set -e
 
               echo '==> Updating base system'
-              pacman -Syu --noconfirm
+              pacman -Syyu --noconfirm
 
               echo '==> Installing build tools and archiso deps'
               pacman -S --noconfirm grub edk2-shell memtest86+ archiso arch-install-scripts base-devel sudo git curl python3
+
+              export PACMAN_XFER_COMMAND="/usr/bin/wget -c -O %o %u"
+              
 
               echo '==> Running ISO build script'
               # run your ISO builder script (must produce out/*.iso in repo workspace)
@@ -48,7 +51,7 @@ jobs:
         uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
-
+# had to export PACMAN_XFER_COMMAND above to get pacman working behind gabeos cloudflare. dk if it works. don't care either
       - name: Install gcloud & gsutil
         uses: google-github-actions/setup-gcloud@v1
         with:
