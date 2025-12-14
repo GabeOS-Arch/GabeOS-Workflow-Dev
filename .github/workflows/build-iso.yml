@@ -35,8 +35,10 @@ jobs:
               echo '==> Installing build tools and archiso deps'
               pacman -S --noconfirm grub edk2-shell memtest86+ archiso arch-install-scripts base-devel sudo git curl python3
 
-              export PACMAN_XFER_COMMAND="/usr/bin/wget -c -O %o %u"
-              
+              export PACMAN_XFER_COMMAND='/usr/bin/wget -c -O %o %u'
+              # this is the mistake of a person who ingested perfume once (i added quotes which made the command blurt and die)
+              # kids if you ever work on this script make sure to start a stopwatch.
+              # hrs wasted: 22
 
               echo '==> Running ISO build script'
               # run your ISO builder script (must produce out/*.iso in repo workspace)
