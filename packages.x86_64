@@ -14,7 +14,7 @@ mdadm
 nano
 ntfs-3g
 mkinitcpio
-mkinitcpio-firmware
+# no one deserves mkinitcpio-firmware anyway
 openssh
 texinfo
 neovim
