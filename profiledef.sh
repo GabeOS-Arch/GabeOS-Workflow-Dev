@@ -8,11 +8,10 @@ iso_application="GabeOS Live/Rescue Drive... Disk... idgaf"
 iso_version="$(date --date="@${SOURCE_DATE_EPOCH:-$(date +%s)}" +%Y.%m.%d)"
 install_dir="arch"
 buildmodes=('iso')
-# NOTE: mkarchiso does not support Limine-specific bootmodes ('bios.limine-bios.mbr',
-# 'uefi-x64.limine-uefi.esp') in the current Arch repo package.  We use standard
-# syslinux (BIOS) + GRUB (UEFI) here so that mkarchiso succeeds, then
-# postprocess_limine.sh replaces the bootloader with Limine after ISO creation.
-bootmodes=('bios.syslinux.mbr' 'bios.syslinux.eltorito' 'uefi-x64.grub.esp')
+# UEFI-only: only the x86_64 GRUB ESP bootmode is used.
+# No BIOS/legacy syslinux bootmodes.  The postprocess_limine.sh step replaces
+# the GRUB EFI bootloader with Limine (UEFI-only) after mkarchiso completes.
+bootmodes=('uefi-x64.grub.esp')
 
 arch="x86_64"
 pacman_conf="pacman.conf"
@@ -33,4 +32,5 @@ file_permissions=(
   ["/usr/local/bin/choose-mirror"]="0:0:755"
   ["/usr/local/bin/Installation_guide"]="0:0:755"
   ["/usr/local/bin/livecd-sound"]="0:0:755"
+  ["/etc/calamares/scripts/check-uefi-prerequisites"]="0:0:755"
 )

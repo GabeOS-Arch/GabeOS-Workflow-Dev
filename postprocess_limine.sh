@@ -1,18 +1,20 @@
 #!/usr/bin/env bash
-# postprocess_limine.sh – Inject Limine BIOS + UEFI boot into the GabeOS ISO.
+# postprocess_limine.sh – Inject Limine UEFI boot into the GabeOS ISO.
 #
 # Called by build_iso.sh immediately after mkarchiso completes.
 # Requires (must be installed in the build environment):
 #   xorriso   – extract ISO and rebuild with new boot parameters
-#   limine    – provides boot binaries and the 'limine bios-install' command
+#   limine    – provides UEFI boot binary and the 'limine' command
 #
 # What it does:
 #   1. Extracts the ISO produced by mkarchiso (out/*.iso) to a temp directory.
-#   2. Copies Limine BIOS + UEFI boot files into a limine/ sub-directory.
+#   2. Copies the Limine UEFI boot file into a limine/ sub-directory.
 #   3. Writes a limine.conf from the repo template, substituting real values.
-#   4. Rebuilds the ISO with xorriso using Limine El Torito / UEFI boot entries.
-#   5. Runs 'limine bios-install' to embed the BIOS stage into the ISO.
-#   6. Replaces the original ISO so the upload step picks it up automatically.
+#   4. Rebuilds the ISO with xorriso using UEFI-only Limine boot entries.
+#   5. Replaces the original ISO so the upload step picks it up automatically.
+#
+# UEFI-only: no BIOS/MBR boot support is added.  The ISO uses GPT and an
+# EFI System Partition (ESP) as the sole boot mechanism.
 
 set -euo pipefail
 
@@ -35,9 +37,7 @@ done
 
 LIMINE_SHARE="/usr/share/limine"
 for f in \
-    "${LIMINE_SHARE}/limine-bios-cd.bin" \
-    "${LIMINE_SHARE}/limine-uefi-cd.bin" \
-    "${LIMINE_SHARE}/limine-bios.sys"; do
+    "${LIMINE_SHARE}/limine-uefi-cd.bin"; do
     if [[ ! -f "${f}" ]]; then
         echo "ERROR: Required Limine file not found: ${f}" >&2
         exit 1
@@ -89,14 +89,12 @@ fi
 echo "ARCHISO_UUID: ${ISO_UUID:-<not found>}"
 
 # ---------------------------------------------------------------------------
-# Place Limine boot files in ISO root
+# Place Limine UEFI boot file in ISO root
 # ---------------------------------------------------------------------------
 LIMINE_DIR="${ISO_ROOT}/limine"
 mkdir -p "${LIMINE_DIR}"
 
-cp "${LIMINE_SHARE}/limine-bios-cd.bin" "${LIMINE_DIR}/"
 cp "${LIMINE_SHARE}/limine-uefi-cd.bin" "${LIMINE_DIR}/"
-cp "${LIMINE_SHARE}/limine-bios.sys"    "${LIMINE_DIR}/"
 
 # ---------------------------------------------------------------------------
 # Write limine.conf (substitute template variables)
@@ -143,32 +141,21 @@ EOF
 fi
 
 # ---------------------------------------------------------------------------
-# Rebuild ISO with Limine BIOS + UEFI boot
+# Rebuild ISO with Limine UEFI-only boot
 # ---------------------------------------------------------------------------
 OUTPUT_ISO="${WORK_DIR}/output.iso"
-echo "Building Limine-bootable ISO: ${OUTPUT_ISO}"
+echo "Building Limine UEFI-bootable ISO: ${OUTPUT_ISO}"
 
 xorriso -as mkisofs \
     -iso-level 3 \
     -full-iso9660-filenames \
     -joliet -joliet-long \
     -rational-rock \
-    -b limine/limine-bios-cd.bin \
-    -no-emul-boot \
-    -boot-load-size 4 \
-    -boot-info-table \
     --efi-boot limine/limine-uefi-cd.bin \
     -efi-boot-part \
     --efi-boot-image \
-    --protective-msdos-label \
     -o "${OUTPUT_ISO}" \
     "${ISO_ROOT}"
-
-# ---------------------------------------------------------------------------
-# Install Limine BIOS stage into the ISO
-# ---------------------------------------------------------------------------
-echo "Installing Limine BIOS bootloader stage..."
-limine bios-install "${OUTPUT_ISO}"
 
 # ---------------------------------------------------------------------------
 # Replace original ISO
