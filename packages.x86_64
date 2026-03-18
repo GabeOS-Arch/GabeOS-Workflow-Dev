@@ -44,6 +44,7 @@ mkinitcpio-nfs-utils
 openssl
 pv
 limine
+grub
 
 # Live System
 arch-install-scripts
