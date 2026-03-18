@@ -29,7 +29,7 @@ jobs:
             archlinux:latest /bin/bash -lc "
               set -e
               pacman -Sy --noconfirm
-              pacman -S --noconfirm grub edk2-shell memtest86+ archiso arch-install-scripts base-devel sudo git curl python3 limine
+              pacman -S --noconfirm grub edk2-shell memtest86+ archiso arch-install-scripts base-devel sudo git curl python3 limine xorriso mtools dosfstools
               # run your ISO builder script (must produce out/*.iso in repo workspace)
               ./build_iso.sh
               # ensure the produced ISO is owned so runner can access it
