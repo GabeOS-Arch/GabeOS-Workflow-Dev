@@ -6,7 +6,6 @@ btrfs-progs
 dmraid
 dosfstools
 efibootmgr
-grub
 os-prober
 linux-firmware
 lvm2
@@ -44,11 +43,12 @@ mkinitcpio-archiso
 mkinitcpio-nfs-utils
 openssl
 pv
+limine
+grub
 
 # Live System
 arch-install-scripts
 calamares
-syslinux
 zram-generator
 
 # Hyprland and Wayland utilities
