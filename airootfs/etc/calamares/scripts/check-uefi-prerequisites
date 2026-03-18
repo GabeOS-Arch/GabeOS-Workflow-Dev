@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# check-uefi-prerequisites
+# Fail fast if the system is not booted in UEFI mode.
+# Called by Calamares (shellprocess_check_uefi module) before the partition step.
+
+set -euo pipefail
+
+# --- 1. UEFI firmware check ---
+if [ ! -d /sys/firmware/efi ]; then
+    echo "ERROR: GabeOS requires UEFI firmware." >&2
+    echo "       /sys/firmware/efi was not found, which means the system" >&2
+    echo "       is running in legacy BIOS mode." >&2
+    echo "" >&2
+    echo "       Please reboot, enter your firmware/BIOS settings, enable UEFI" >&2
+    echo "       mode, and disable CSM (Compatibility Support Module) / Legacy boot." >&2
+    exit 1
+fi
+
+echo "UEFI firmware detected. Proceeding with installation."
+exit 0

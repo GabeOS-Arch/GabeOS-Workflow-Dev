@@ -15,10 +15,10 @@ This document outlines the performance optimizations implemented to reduce the G
   - Level 6: Good compression, much faster (4x faster than level 19)
 
 ### 2. Boot Mode Reduction (10-15% speed improvement)
-- Reduced from 6 boot modes to 2 essential ones:
+- Reduced to a single UEFI boot mode (UEFI-only; no BIOS/legacy support):
   - **Before**: `bios.syslinux.mbr`, `bios.syslinux.eltorito`, `uefi-ia32.grub.esp`, `uefi-x64.grub.esp`, `uefi-ia32.grub.eltorito`, `uefi-x64.grub.eltorito`
-  - **After**: `bios.limine-bios.mbr`, `uefi-x64.limine-uefi.esp`
-- This covers the vast majority of use cases while significantly reducing build time
+  - **After**: `uefi-x64.grub.esp` (mkarchiso stage) → Limine UEFI (post-processing)
+- GabeOS is UEFI-only; dropping all BIOS/syslinux bootmodes removes unnecessary build steps
 
 ### 3. Parallel Processing (5-10% speed improvement)
 - Added `-P` flag to mkarchiso for parallel processing

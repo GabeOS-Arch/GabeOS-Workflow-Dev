@@ -1,1 +1,10 @@
+GabeOS Live Environment – UEFI Mode
+====================================
+This system requires UEFI firmware with GPT partitioning.
+Legacy BIOS / CSM boot is NOT supported.
 
+If you are installing GabeOS, ensure your target disk uses a
+GPT partition table with an EFI System Partition (ESP, FAT32,
+minimum 512 MiB) mounted at /boot/efi.
+
+GRUB (x86_64-efi) will be installed as the bootloader.

@@ -87,9 +87,10 @@ mkarchiso \
 echo "Build complete. Output in ./out"
 ls -la ./out
 
-# Post-process the ISO to add Limine BIOS + UEFI boot support.
-# postprocess_limine.sh takes the ISO from out/*.iso, injects Limine, and
-# replaces the original file so the upload step finds it at the same path.
+# Post-process the ISO to add Limine UEFI boot support.
+# postprocess_limine.sh takes the ISO from out/*.iso, injects the Limine UEFI
+# bootloader, and replaces the original file so the upload step finds it at
+# the same path.  BIOS/MBR boot is not added.
 echo "Running Limine post-processing..."
 bash "$(dirname "$0")/postprocess_limine.sh"
 echo "Done. Final ISO:"
