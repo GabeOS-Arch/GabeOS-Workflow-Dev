@@ -9,6 +9,16 @@ iso_version="$(date --date="@${SOURCE_DATE_EPOCH:-$(date +%s)}" +%Y.%m.%d)"
 install_dir="arch"
 buildmodes=('iso')
 bootmodes=('bios.limine-bios.mbr' 'uefi-x64.limine-uefi.esp')
+
+# Ensure Limine tooling is available when using Limine boot modes
+if printf '%s\n' "${bootmodes[@]}" | grep -q 'limine'; then
+  if ! command -v limine-install >/dev/null 2>&1; then
+    echo "Error: Limine boot modes are configured in profiledef.sh, but 'limine-install' is not available in PATH." >&2
+    echo "Please install the 'limine' package (or provide 'limine-install') on the build host/CI before running mkarchiso." >&2
+    return 1 2>/dev/null || exit 1
+  fi
+fi
+
 arch="x86_64"
 pacman_conf="pacman.conf"
 airootfs_image_type="squashfs"
