@@ -10,12 +10,12 @@ install_dir="arch"
 buildmodes=('iso')
 bootmodes=('bios.limine-bios.mbr' 'uefi-x64.limine-uefi.esp')
 
-# Ensure Limine tooling is available when using Limine boot modes
+# Arch's 'limine' package ships EFI binaries (BOOTX64.EFI) but not 'limine-install'.
+# Warn if the assets are absent; do not abort — mkarchiso handles the rest.
 if printf '%s\n' "${bootmodes[@]}" | grep -q 'limine'; then
-  if ! command -v limine-install >/dev/null 2>&1; then
-    echo "Error: Limine boot modes are configured in profiledef.sh, but 'limine-install' is not available in PATH." >&2
-    echo "Please install the 'limine' package (or provide 'limine-install') on the build host/CI before running mkarchiso." >&2
-    return 1 2>/dev/null || exit 1
+  if [[ ! -e /usr/share/limine/BOOTX64.EFI ]] && [[ ! -e /usr/share/limine/BOOTIA32.EFI ]]; then
+    echo "Warning: Limine boot modes are enabled, but Limine EFI binaries were not found in /usr/share/limine/." >&2
+    echo "If mkarchiso fails later, ensure the 'limine' package is installed in the build environment." >&2
   fi
 fi
 

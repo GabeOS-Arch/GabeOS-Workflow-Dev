@@ -24,11 +24,18 @@ else
     echo "archiso is already installed."
 fi
 
+# Make sure mkarchiso is actually available before proceeding
+if ! command -v mkarchiso >/dev/null 2>&1; then
+  echo "mkarchiso not found in PATH even though archiso is installed. Aborting." >&2
+  exit 1
+fi
+
 # Performance Optimizations
 # Use all cores for compilation (if any packages are built)
 export MAKEFLAGS="-j$(nproc)"
 # Use all cores for SquashFS creation
-export MKSQUASHFS_PROCS=$(nproc)
+export MKSQUASHFS_PROCS
+MKSQUASHFS_PROCS="$(nproc)"
 
 # Output dir
 mkdir -p ./out
